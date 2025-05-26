@@ -8,11 +8,10 @@ const gameState = {
 };
 
 // 案件資料
-const cases = [
-    {
+const cases = [    {
         id: 1,
         title: "神秘的博物館失竊案",
-        background: "市立博物館的鎮館之寶「藍月鑽石」在一個雨夜被盜。監視器顯示當晚有四個人在博物館內活動。",
+        background: "市立博物館的鎮館之寶「藍月鑽石」在一個雨夜被盜。監視器顯示當晚有四個人在博物館內活動。竊賊似乎對博物館的安保系統非常熟悉，並且具有專業的珠寶知識。",
         suspects: [
             { name: "王保全", role: "博物館保全", alibi: "聲稱整晚都在監控室值班" },
             { name: "李教授", role: "珠寶專家", alibi: "稱在辦公室整理文件到深夜" },
@@ -20,13 +19,17 @@ const cases = [
             { name: "張維修", role: "維修工人", alibi: "在修理博物館的空調系統" }
         ],
         evidences: [
-            { id: "E1", name: "破損的玻璃", description: "展示櫃的玻璃被專業工具切割" },
-            { id: "E2", name: "殘留指紋", description: "展示櫃上發現不完整的指紋" },
-            { id: "E3", name: "監視器畫面", description: "顯示在案發時間段有短暫的影像中斷" },
-            { id: "E4", name: "保全記錄", description: "值班記錄顯示有異常的巡邏路線" }
+            { id: "E1", name: "破損的玻璃", description: "展示櫃的玻璃被專業的鑽石切割器精確切割，切口非常乾淨" },
+            { id: "E2", name: "殘留指紋", description: "展示櫃上發現不完整的指紋，經過比對是一個戴著特殊材質手套的痕跡" },
+            { id: "E3", name: "監視器畫面", description: "顯示在案發時間段有3分鐘的影像中斷，正好是從李教授辦公室附近的配電箱發生異常" },
+            { id: "E4", name: "保全記錄", description: "值班記錄顯示保全的巡邏路線有異常，剛好錯過了珠寶展示區" },
+            { id: "E5", name: "空調維修申請", description: "維修申請是在案發前一天突然提出的，但診斷顯示空調系統其實運作正常" }
         ],
         solution: "李教授",
-        solutionExplanation: "李教授利用其專業知識和對博物館的熟悉度，在維修工人檢查空調時製造混亂，並利用其珠寶專家的身份接近展示櫃。監視器的異常恰好發生在他的辦公室附近。"
+        solutionWeapon: "鑽石切割器",
+        solutionMotive: "巨額賭債",
+        solutionMethod: "利用維修工人檢查空調系統製造混亂，同時破壞配電箱造成監視器短暫關閉，再用專業工具快速切割展示櫃竊取藍月鑽石",
+        solutionExplanation: "李教授因為巨額賭債而鋌而走險。他利用自己珠寶專家的身份和對博物館的熟悉度，策劃了這起竊案。他偽造了空調維修申請製造混亂，並利用專業的鑽石切割器行竊。案發當晚，他先是故意破壞配電箱造成監視器短暫關閉，接著利用特殊手套避免留下指紋，精確切割展示櫃偷走藍月鑽石。他的專業背景不僅幫助他順利得手，還讓他能夠在黑市上轉售贓物。"
     }
 ];
 
@@ -129,34 +132,56 @@ function analyzeEvidence() {
 
 // 提交推理
 function submitDeduction() {
-    const deductionText = document.getElementById('deduction-text').value.trim();
+    const culprit = document.getElementById('culprit').value.trim();
+    const weapon = document.getElementById('weapon').value.trim();
+    const motive = document.getElementById('motive').value.trim();
+    const method = document.getElementById('method').value.trim();
+    const evidenceExplanation = document.getElementById('evidence-explanation').value.trim();
     
-    if (!deductionText) {
+    // 檢查是否所有欄位都已填寫
+    if (!culprit || !weapon || !motive || !method || !evidenceExplanation) {
         Swal.fire({
-            title: '請輸入你的推理',
-            text: '基於收集到的證據，寫下你的推理結論。',
+            title: '請完整填寫推理內容',
+            text: '所有欄位都需要填寫才能提交推理。',
             icon: 'warning'
         });
         return;
-    }
+    }    // 檢查各個推理要素是否正確
+    const isCulpritCorrect = culprit === gameState.currentCase.solution;
+    const isWeaponCorrect = weapon.toLowerCase().includes(gameState.currentCase.solutionWeapon.toLowerCase());
+    const isMotiveCorrect = motive.toLowerCase().includes(gameState.currentCase.solutionMotive.toLowerCase());
+    const isMethodSimilar = method.toLowerCase().includes(gameState.currentCase.solutionMethod.toLowerCase().split(' ').slice(0, 3).join(' '));
 
-    const culpritPattern = new RegExp(gameState.currentCase.solution);
-    const isCorrect = culpritPattern.test(deductionText);
+    // 計算推理的準確度
+    const correctElements = [
+        isCulpritCorrect ? 40 : 0,  // 兇手最重要
+        isWeaponCorrect ? 20 : 0,   // 工具其次
+        isMotiveCorrect ? 20 : 0,   // 動機也很重要
+        isMethodSimilar ? 20 : 0    // 作案手法
+    ].reduce((a, b) => a + b, 0);
 
-    if (isCorrect) {
+    if (isCulpritCorrect) {
         gameState.isGameComplete = true;
         Swal.fire({
-            title: '推理正確！',
+            title: `推理${correctElements === 100 ? '完全正確' : '大致正確'}！`,
             html: `
-                <p>恭喜你破解了這個案件！</p>
-                <p><strong>真相：</strong>${gameState.currentCase.solutionExplanation}</p>
+                <p>恭喜你找出了真兇！推理準確度：${correctElements}%</p>
+                <p><strong>你的推理：</strong></p>
+                <ul>
+                    <li><strong>兇手：</strong>${culprit} ${isCulpritCorrect ? '✅' : '❌'}</li>
+                    <li><strong>使用工具：</strong>${weapon} ${isWeaponCorrect ? '✅' : '❌'}</li>
+                    <li><strong>犯案動機：</strong>${motive} ${isMotiveCorrect ? '✅' : '❌'}</li>
+                    <li><strong>作案手法：</strong>${method} ${isMethodSimilar ? '✅' : '❌'}</li>
+                    <li><strong>關鍵證據：</strong>${evidenceExplanation}</li>
+                </ul>
+                <p><strong>官方解答：</strong>${gameState.currentCase.solutionExplanation}</p>
             `,
             icon: 'success'
         });
     } else {
         Swal.fire({
             title: '推理不正確',
-            text: '再仔細思考一下案件的細節吧！',
+            text: '再仔細思考一下案件的細節吧！特別是兇手的身份。',
             icon: 'error'
         });
     }

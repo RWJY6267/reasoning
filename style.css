@@ -105,6 +105,46 @@ button:hover {
     font-size: 1.2em;
 }
 
+.deduction-field {
+    margin-bottom: 20px;
+}
+
+.deduction-field label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: bold;
+    color: var(--text-color);
+}
+
+.deduction-field input[type="text"] {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border: 2px solid var(--accent-color);
+    border-radius: 5px;
+    font-size: 1em;
+}
+
+.deduction-field textarea {
+    width: 100%;
+    min-height: 100px;
+    background-color: var(--primary-color);
+    color: var(--text-color);
+    border: 2px solid var(--accent-color);
+    border-radius: 5px;
+    padding: 12px;
+    font-size: 1em;
+    resize: vertical;
+}
+
+.deduction-field input[type="text"]:focus,
+.deduction-field textarea:focus {
+    outline: none;
+    border-color: #8e44ad;
+    box-shadow: 0 0 5px rgba(142, 68, 173, 0.5);
+}
+
 @media (max-width: 768px) {
     .container {
         padding: 10px;

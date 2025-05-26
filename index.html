@@ -34,12 +34,29 @@
                     <button onclick="interrogateSuspects()">詢問嫌疑人</button>
                     <button onclick="analyzeEvidence()">分析證據</button>
                 </div>
-            </div>
-
-            <div id="deduction-section" class="section">
+            </div>            <div id="deduction-section" class="section">
                 <h2>推理結論</h2>
                 <div id="deduction-form">
-                    <textarea id="deduction-text" placeholder="輸入你的推理..."></textarea>
+                    <div class="deduction-field">
+                        <label for="culprit">兇手是誰？</label>
+                        <input type="text" id="culprit" placeholder="輸入兇手名字...">
+                    </div>
+                    <div class="deduction-field">
+                        <label for="weapon">使用的工具/凶器？</label>
+                        <input type="text" id="weapon" placeholder="輸入使用的工具或凶器...">
+                    </div>
+                    <div class="deduction-field">
+                        <label for="motive">犯案動機？</label>
+                        <input type="text" id="motive" placeholder="輸入犯案動機...">
+                    </div>
+                    <div class="deduction-field">
+                        <label for="method">作案手法？</label>
+                        <textarea id="method" placeholder="詳細說明作案手法..."></textarea>
+                    </div>
+                    <div class="deduction-field">
+                        <label for="evidence-explanation">關鍵證據說明：</label>
+                        <textarea id="evidence-explanation" placeholder="說明哪些證據支持你的推理..."></textarea>
+                    </div>
                     <button onclick="submitDeduction()">提交推理</button>
                 </div>
             </div>
