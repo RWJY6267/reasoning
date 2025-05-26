@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>偵探推理遊戲</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- 引入 Sweetalert2 CDN 用於美化提示框 -->
+    <link href="https://cdn.jsdelivr.net/npm/@sweetalert2/theme-dark@4/dark.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>偵探推理遊戲</h1>
+            <div id="case-status">案件進度：<span id="progress">0</span>%</div>
+        </header>
+        
+        <main>
+            <div id="story-section" class="section">
+                <h2>案件背景</h2>
+                <div id="story-content"></div>
+            </div>
+
+            <div id="evidence-section" class="section">
+                <h2>證據列表</h2>
+                <div id="evidence-list"></div>
+            </div>
+
+            <div id="interaction-section" class="section">
+                <h2>調查行動</h2>
+                <div id="action-buttons">
+                    <button onclick="investigateScene()">調查現場</button>
+                    <button onclick="interrogateSuspects()">詢問嫌疑人</button>
+                    <button onclick="analyzeEvidence()">分析證據</button>
+                </div>
+            </div>
+
+            <div id="deduction-section" class="section">
+                <h2>推理結論</h2>
+                <div id="deduction-form">
+                    <textarea id="deduction-text" placeholder="輸入你的推理..."></textarea>
+                    <button onclick="submitDeduction()">提交推理</button>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
