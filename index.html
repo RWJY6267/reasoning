@@ -38,24 +38,24 @@
                 <h2>推理結論</h2>
                 <div id="deduction-form">
                     <div class="deduction-field">
-                        <label for="culprit">兇手是誰？</label>
-                        <input type="text" id="culprit" placeholder="輸入兇手名字...">
+                        <label for="culprit">兇手是誰？(2-3字)</label>
+                        <input type="text" id="culprit" maxlength="3" placeholder="輸入姓名...">
                     </div>
                     <div class="deduction-field">
-                        <label for="weapon">使用的工具/凶器？</label>
-                        <input type="text" id="weapon" placeholder="輸入使用的工具或凶器...">
+                        <label for="weapon">使用的工具？(4字)</label>
+                        <input type="text" id="weapon" maxlength="4" placeholder="例：鑽石切割器">
                     </div>
                     <div class="deduction-field">
-                        <label for="motive">犯案動機？</label>
-                        <input type="text" id="motive" placeholder="輸入犯案動機...">
+                        <label for="motive">犯案動機？(3字)</label>
+                        <input type="text" id="motive" maxlength="3" placeholder="例：賭債">
                     </div>
                     <div class="deduction-field">
-                        <label for="method">作案手法？</label>
-                        <textarea id="method" placeholder="詳細說明作案手法..."></textarea>
+                        <label for="method">作案手法？(20字內)</label>
+                        <input type="text" id="method" maxlength="20" placeholder="簡述關鍵步驟...">
                     </div>
                     <div class="deduction-field">
-                        <label for="evidence-explanation">關鍵證據說明：</label>
-                        <textarea id="evidence-explanation" placeholder="說明哪些證據支持你的推理..."></textarea>
+                        <label for="evidence-explanation">關鍵證據代號？(E1-E5)</label>
+                        <input type="text" id="evidence-explanation" maxlength="2" placeholder="例：E1">
                     </div>
                     <button onclick="submitDeduction()">提交推理</button>
                 </div>

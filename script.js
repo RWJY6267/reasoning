@@ -136,45 +136,65 @@ function submitDeduction() {
     const weapon = document.getElementById('weapon').value.trim();
     const motive = document.getElementById('motive').value.trim();
     const method = document.getElementById('method').value.trim();
-    const evidenceExplanation = document.getElementById('evidence-explanation').value.trim();
+    const evidenceId = document.getElementById('evidence-explanation').value.trim().toUpperCase();
     
     // 檢查是否所有欄位都已填寫
-    if (!culprit || !weapon || !motive || !method || !evidenceExplanation) {
+    if (!culprit || !weapon || !motive || !method || !evidenceId) {
         Swal.fire({
             title: '請完整填寫推理內容',
             text: '所有欄位都需要填寫才能提交推理。',
             icon: 'warning'
         });
         return;
-    }    // 檢查各個推理要素是否正確
-    const isCulpritCorrect = culprit === gameState.currentCase.solution;
-    const isWeaponCorrect = weapon.toLowerCase().includes(gameState.currentCase.solutionWeapon.toLowerCase());
-    const isMotiveCorrect = motive.toLowerCase().includes(gameState.currentCase.solutionMotive.toLowerCase());
-    const isMethodSimilar = method.toLowerCase().includes(gameState.currentCase.solutionMethod.toLowerCase().split(' ').slice(0, 3).join(' '));
+    }
 
+    // 檢查證據代號格式
+    if (!evidenceId.match(/^E[1-5]$/)) {
+        Swal.fire({
+            title: '證據代號格式錯誤',
+            text: '請輸入正確的證據代號（E1-E5）',
+            icon: 'warning'
+        });
+        return;
+    }
+
+    // 檢查各個推理要素是否正確
+    const isCulpritCorrect = culprit === gameState.currentCase.solution;
+    const isWeaponCorrect = weapon === gameState.currentCase.solutionWeapon;
+    const isMotiveCorrect = motive === gameState.currentCase.solutionMotive;
+    const hasKeyEvidence = gameState.evidences.some(e => e.id === evidenceId);
+    
     // 計算推理的準確度
     const correctElements = [
         isCulpritCorrect ? 40 : 0,  // 兇手最重要
         isWeaponCorrect ? 20 : 0,   // 工具其次
-        isMotiveCorrect ? 20 : 0,   // 動機也很重要
-        isMethodSimilar ? 20 : 0    // 作案手法
+        isMotiveCorrect ? 20 : 0,   // 動機
+        hasKeyEvidence ? 20 : 0     // 關鍵證據
     ].reduce((a, b) => a + b, 0);
 
     if (isCulpritCorrect) {
         gameState.isGameComplete = true;
+        let feedback = [];
+        
+        feedback.push(`兇手：${culprit} ${isCulpritCorrect ? '✅' : '❌'}`);
+        feedback.push(`工具：${weapon} ${isWeaponCorrect ? '✅' : '❌'}`);
+        feedback.push(`動機：${motive} ${isMotiveCorrect ? '✅' : '❌'}`);
+        feedback.push(`關鍵證據：${evidenceId} ${hasKeyEvidence ? '✅' : '❌'}`);
+        
         Swal.fire({
             title: `推理${correctElements === 100 ? '完全正確' : '大致正確'}！`,
             html: `
                 <p>恭喜你找出了真兇！推理準確度：${correctElements}%</p>
                 <p><strong>你的推理：</strong></p>
                 <ul>
-                    <li><strong>兇手：</strong>${culprit} ${isCulpritCorrect ? '✅' : '❌'}</li>
-                    <li><strong>使用工具：</strong>${weapon} ${isWeaponCorrect ? '✅' : '❌'}</li>
-                    <li><strong>犯案動機：</strong>${motive} ${isMotiveCorrect ? '✅' : '❌'}</li>
-                    <li><strong>作案手法：</strong>${method} ${isMethodSimilar ? '✅' : '❌'}</li>
-                    <li><strong>關鍵證據：</strong>${evidenceExplanation}</li>
+                    ${feedback.map(f => `<li>${f}</li>`).join('')}
                 </ul>
-                <p><strong>官方解答：</strong>${gameState.currentCase.solutionExplanation}</p>
+                <p><strong>正確答案：</strong></p>
+                <ul>
+                    <li>兇手：${gameState.currentCase.solution}</li>
+                    <li>工具：${gameState.currentCase.solutionWeapon}</li>
+                    <li>動機：${gameState.currentCase.solutionMotive}</li>
+                </ul>
             `,
             icon: 'success'
         });
